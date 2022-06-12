@@ -1,12 +1,34 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet,Alert } from 'react-native';
 import {Feather, Ionicons} from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import Stars from 'react-native-stars';
 
 import SwiperComponent from '../components/Swiper';
+import { useNavigation } from '@react-navigation/native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Detail() {
+ const navigation = useNavigation();
+ const handleAddInCart = async ()=> {
+  const mockedInfo = {
+    name: 'Casa de Praia',
+    price: 'R$ 1.200,20',
+    image: '../assets/house5.jpg',
+  }
+  try {
+    await AsyncStorage.setItem('@minicart', JSON.stringify(mockedInfo))
+    Alert.alert('adicionado com sucesso!', 'Adicionamos ao carrinho a Casa de Praia ', [
+      { text: 'OK', onPress: () => navigation.navigate('minicart') },
+    ]);
+
+  } catch (e) {
+    alert('Failed to save the data to the storage')
+  }
+  
+ }
+
  return (
    <View style={styles.container}>
      <View style={styles.swiperContent}>
@@ -40,6 +62,9 @@ export default function Detail() {
     <Text style={styles.description}>
      Casa nova uma quadra do mar, lugar seguro e monitorado 24horas.
     </Text>
+    <TouchableOpacity onPress={handleAddInCart}>
+      <Text>adicionar ao carrinho</Text>
+    </TouchableOpacity>
 
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingHorizontal: 15, marginTop: 35 }}>
       <View style={styles.slide}>
